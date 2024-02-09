@@ -1,58 +1,82 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Todo List</title>
   <style>
     /* Main styles */
-.todo-list {
-  list-style-type: none;
-  padding: 0;
-  display: flex;
-  justify-content: space-between;
-}
-.todo-column {
-  flex: 1;
-  background-color: #f2f2f2;
-  padding: 10px;
-  margin-right: 10px;
-}
-.todo-item {
-  background-color: #f2f2f2;
-  padding: 10px;
-  margin-bottom: 5px;
-  cursor: move;
-  position: relative;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
-}
-.todo-item:hover {
-  background-color: #e6e6e6;
-}
-.delete-btn {
-  position: absolute;
-  right: 5px;
-  top: 5px;
-  cursor: pointer;
-  color: red;
-  display: none;
-}
-.todo-item:hover .delete-btn {
-  display: block;
-}
+    .todo-list {
+      list-style-type: none;
+      padding: 0;
+      display: flex;
+      justify-content: space-between;
+    }
 
-/* Additional styles */
-body {
-  font-family: Arial, sans-serif;
-}
-footer {
-  text-align: center;
-  margin-top: 20px;
-}
+    .todo-column {
+      flex: 1;
+      background-color: #f2f2f2;
+      padding: 10px;
+      margin-right: 10px;
+    }
+
+    .todo-item {
+      background-color: #f2f2f2;
+      padding: 10px;
+      margin-bottom: 5px;
+      cursor: move;
+      position: relative;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease;
+    }
+
+    .todo-item:hover {
+      background-color: #e6e6e6;
+    }
+
+    .delete-btn {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      cursor: pointer;
+      color: red;
+      display: none;
+    }
+
+    .todo-item:hover .delete-btn {
+      display: block;
+    }
+
+    /* Additional styles */
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    /* Dark theme styles */
+    body.dark-theme {
+      background-color: #1a1a1a;
+      color: #fff;
+    }
+
+    .todo-column.dark-theme {
+      background-color: #333;
+    }
+
+    .todo-item.dark-theme {
+      background-color: #333;
+      box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+    }
   </style>
 </head>
+
 <body>
   <h1>Todo List</h1>
+  <button onclick="toggleTheme()">Toggle Theme</button> <!-- Add a button to toggle the theme -->
   <div class="todo-list">
     <div class="todo-column" id="column1">
       <h2>Tasks in Progress</h2>
@@ -80,6 +104,23 @@ footer {
   <footer>Created by [Your Name]</footer>
 
   <script>
+    let isDarkTheme = false;
+
+    function toggleTheme() {
+      const body = document.querySelector('body');
+      const todoColumns = document.querySelectorAll('.todo-column');
+      const todoItems = document.querySelectorAll('.todo-item');
+      if (isDarkTheme) {
+        body.classList.remove('dark-theme');
+        todoColumns.forEach(column => column.classList.remove('dark-theme'));
+        todoItems.forEach(item => item.classList.remove('dark-theme'));
+      } else {
+        body.classList.add('dark-theme');
+        todoColumns.forEach(column => column.classList.add('dark-theme'));
+        todoItems.forEach(item => item.classList.add('dark-theme'));
+      }
+      isDarkTheme = !isDarkTheme;
+    }
     let draggedItem = null;
 
     function allowDrop(event) {
@@ -112,4 +153,5 @@ footer {
     }
   </script>
 </body>
+
 </html>
