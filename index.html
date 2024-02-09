@@ -1,169 +1,115 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToDo List</title>
-    <style>
-        /* Стили для адаптивности */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+  <title>Todo List</title>
+  <style>
+    /* Main styles */
+.todo-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+}
+.todo-column {
+  flex: 1;
+  background-color: #f2f2f2;
+  padding: 10px;
+  margin-right: 10px;
+}
+.todo-item {
+  background-color: #f2f2f2;
+  padding: 10px;
+  margin-bottom: 5px;
+  cursor: move;
+  position: relative;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+.todo-item:hover {
+  background-color: #e6e6e6;
+}
+.delete-btn {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  cursor: pointer;
+  color: red;
+  display: none;
+}
+.todo-item:hover .delete-btn {
+  display: block;
+}
 
-        header {
-            background-color: #f2f2f2;
-            padding: 20px;
-            text-align: center;
-        }
+/* Additional styles */
+body {
+  font-family: Arial, sans-serif;
+}
+footer {
+  text-align: center;
+  margin-top: 20px;
+}
+  </style>
+</head>
+<body>
+  <h1>Todo List</h1>
+  <div class="todo-list">
+    <div class="todo-column" id="column1">
+      <h2>Tasks in Progress</h2>
+      <ul class="todo-items" id="column1-items" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <li class="todo-item" draggable="true" ondragstart="drag(event)">Task 1 <span class="delete-btn" onclick="deleteTask(event)">❌</span></li>
+        <li class="todo-item" draggable="true" ondragstart="drag(event)">Task 2 <span class="delete-btn" onclick="deleteTask(event)">❌</span></li>
+        <li class="todo-item" draggable="true" ondragstart="drag(event)">Task 3 <span class="delete-btn" onclick="deleteTask(event)">❌</span></li>
+      </ul>
+      <div>
+        <input type="text" id="new-task" placeholder="New Task">
+        <button onclick="addNewTask('column1-items')">Add Task</button>
+      </div>
+    </div>
+    <div class="todo-column" id="column2" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <h2>Completed Tasks</h2>
+      <ul class="todo-items" id="column2-items">
+      </ul>
+    </div>
+    <div class="todo-column" id="column3" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <h2>Tasks to Review</h2>
+      <ul class="todo-items" id="column3-items">
+      </ul>
+    </div>
+  </div>
+  <footer>Created by [Your Name]</footer>
 
-        main {
-            padding: 20px;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        section {
-            margin-bottom: 20px;
-            width: 30%;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        li {
-            margin-bottom: 10px;
-            background-color: #fff;
-            padding: 10px;
-            border: 1px solid #ddd;
-            cursor: pointer;
-        }
-        
-        li {
-        /* Existing styles */
-            transition: background-color 0.3s ease;
-        }
-
-        li.dragging {
-            background-color: #f2f2f2;
-        }
-
-        form {
-            display: flex;
-            margin-top: 10px;
-            justify-content: space-between;
-        }
-
-        input[type="text"] {
-            flex-grow: 1;
-            padding: 5px;
-        }
-
-        button[type="submit"] {
-            padding: 5px 10px;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        footer {
-            background-color: #f2f2f2;
-            padding: 10px;
-            text-align: center;
-        }
-    </style>
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-    var taskListInProgress = document.getElementById("taskListInProgress");
-    var taskListDone = document.getElementById("taskListDone");
-    var tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-    function renderTasks() {
-        taskListInProgress.innerHTML = "";
-        taskListDone.innerHTML = "";
-        tasks.forEach(function(task, index) {
-            var li = document.createElement("li");
-            li.innerText = task;
-            li.setAttribute("draggable", "true");
-            li.setAttribute("ondragstart", "drag(event)");
-            taskListInProgress.appendChild(li);
-        });
-    }
+  <script>
+    let draggedItem = null;
 
     function allowDrop(event) {
-        event.preventDefault();
+      event.preventDefault();
     }
 
     function drag(event) {
-        event.dataTransfer.setData("text/plain", event.target.id);
+      draggedItem = event.target;
     }
 
     function drop(event) {
-        event.preventDefault();
-        var data = event.dataTransfer.getData("text/plain");
-        var targetColumnId = event.target.parentNode.id;
-        if (targetColumnId === "taskListDone") {
-            taskListDone.appendChild(document.getElementById(data));
-            var index = Array.from(event.target.parentNode.children).indexOf(event.target);
-            var task = tasks.splice(index, 1)[0];
-            tasks.push(task);
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-        }
+      event.preventDefault();
+      event.target.appendChild(draggedItem);
     }
 
-    function addTask() {
-        var taskInput = document.getElementById("taskInput");
-        var newTask = taskInput.value.trim();
-        if (newTask !== "") {
-            tasks.push(newTask);
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-            renderTasks();
-            taskInput.value = "";
-        }
+    function deleteTask(event) {
+      event.target.parentElement.remove();
     }
 
-    renderTasks();
-
-    var form = document.querySelector("form");
-    form.addEventListener("submit", function(event) {
-        event.preventDefault();
-        addTask();
-    });
-});
-
-    </script>
-</head>
-<body>
-    <header>
-        <h1>ToDo List</h1>
-    </header>
-    <main>
-        <section ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h2>В процессе</h2>
-            <ul id="taskList" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <!-- Задачи будут отображаться здесь -->
-            </ul>
-        </section>
-        <section ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h2>Готово</h2>
-            <ul id="taskListDone" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <!-- Задачи будут отображаться здесь -->
-            </ul>
-        </section>
-        <section>
-            <h2>Добавить задачу</h2>
-            <form>
-                <input type="text" id="taskInput" placeholder="Введите задачу">
-                <button type="submit">Добавить</button>
-            </form>
-        </section>
-    </main>
-    <footer>
-        <p>Автор: Ваше имя</p>
-    </footer>
+    function addNewTask(columnId) {
+      const newTaskInput = document.getElementById('new-task');
+      const columnItems = document.getElementById(columnId);
+      const newTask = document.createElement('li');
+      newTask.className = 'todo-item';
+      newTask.draggable = true;
+      newTask.innerHTML = newTaskInput.value + ' <span class="delete-btn" onclick="deleteTask(event)">❌</span>';
+      columnItems.appendChild(newTask);
+      newTaskInput.value = '';
+      newTask.addEventListener('dragstart', drag);
+    }
+  </script>
 </body>
 </html>
