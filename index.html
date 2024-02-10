@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>Todo List</title>
  <style>
@@ -41,7 +40,6 @@
     .todo-item:hover .delete-btn {
       display: block;
     }
-
     /* Additional styles */
     body {
       font-family: Arial, sans-serif;
@@ -92,7 +90,7 @@
       </ul>
     </div>
   </div>
-  <footer>Created by Mazunin Andrey</footer>
+  <footer>Created by [Your Name]</footer>
   <script>
     let isDarkTheme = false;
     function toggleTheme() {
@@ -134,11 +132,7 @@
       columnItems.appendChild(newTask);
       newTaskInput.value = '';
       newTask.addEventListener('dragstart', drag);
-      saveTaxiData(); // Вызов функции сохранения данных
     }
-
-    function saveTaxiData() {
-      const taxiItems = Array.from(document.getElementById('column1-items').querySelectorAll('li'));
-      const taxiData = taxiItems.map(item => item.textContent);
-      localStorage.setItem('taxiData', JSON.stringify(taxiData));
-    }
+  </script>
+</body>
+</html>
