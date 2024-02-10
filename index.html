@@ -154,32 +154,48 @@
       newTask.addEventListener('dragstart', drag);
       saveTaxiData(); // Вызов функции сохранения данных
     }
-    // Функция для сохранения данных в localStorage
-    function saveTaxiData() {
-      const taxiItems = Array.from(document.getElementById('column1-items').querySelectorAll('li'));
-      const taxiData = taxiItems.map(item => item.textContent);
-      localStorage.setItem('taxiData', JSON.stringify(taxiData));
-    }
-    // Функция для восстановления данных из localStorage
-    function restoreTaxiData() {
-      const savedTaxiData = localStorage.getItem('taxiData');
-      if (savedTaxiData) {
-        const taxiItems = JSON.parse(savedTaxiData);
-        const column1Items = document.getElementById('column1-items');
-        column1Items.innerHTML = ''; // Очищаем текущие элементы списка
-        taxiItems.forEach(itemText => {
+         // Функция для сохранения данных в localStorage
+  function saveTaxiData() {
+    const allColumns = document.querySelectorAll('.todo-column');
+    const allTasksData = [];
+    allColumns.forEach(column => {
+      const columnId = column.id;
+      const columnItems = Array.from(column.querySelector('.todo-items').querySelectorAll('li'));
+      const columnData = columnItems.map(item => item.textContent);
+      allTasksData.push({ columnId, columnData });
+    });
+    localStorage.setItem('allTasksData', JSON.stringify(allTasksData));
+  }
+
+  // Функция для восстановления данных из localStorage
+  function restoreTaxiData() {
+    const savedTasksData = localStorage.getItem('allTasksData');
+    if (savedTasksData) {
+      const allTasksData = JSON.parse(savedTasksData);
+      allTasksData.forEach(({ columnId, columnData }) => {
+        const columnItems = document.getElementById(columnId);
+        columnItems.innerHTML = ''; // Очищаем текущие элементы списка
+        columnData.forEach(itemText => {
           const newTask = document.createElement('li');
           newTask.className = 'todo-item';
           newTask.draggable = true;
           newTask.textContent = itemText;
           newTask.innerHTML += ' <span class="delete-btn" onclick="deleteTask(event)">❌</span>';
-          column1Items.appendChild(newTask);
+          columnItems.appendChild(newTask);
           newTask.addEventListener('dragstart', drag);
         });
-      }
+      });
     }
-    // Вызываем функцию восстановления данных при загрузке страницы
-    document.addEventListener('DOMContentLoaded', restoreTaxiData);
+  }
+
+  // Обработчик события для перетаскивания задач
+  function handleDragDrop() {
+    // Добавьте обработчики событий для перетаскивания и сбрасывания задач между столбцами
+    // Обновите данные в localStorage при перемещении задач
+  }
+
+  // Вызываем функцию восстановления данных при загрузке страницы
+  document.addEventListener('DOMContentLoaded', restoreTaxiData);
   </script>
 </body>
 
