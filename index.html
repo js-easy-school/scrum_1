@@ -3,7 +3,7 @@
 
 <head>
   <title>Todo List</title>
-  <style>
+ <style>
     /* Main styles */
     .todo-list {
       list-style-type: none;
@@ -11,14 +11,12 @@
       display: flex;
       justify-content: space-between;
     }
-
     .todo-column {
       flex: 1;
       background-color: #f2f2f2;
       padding: 10px;
       margin-right: 10px;
     }
-
     .todo-item {
       background-color: #f2f2f2;
       padding: 10px;
@@ -29,11 +27,9 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       transition: background-color 0.3s ease;
     }
-
     .todo-item:hover {
       background-color: #e6e6e6;
     }
-
     .delete-btn {
       position: absolute;
       right: 5px;
@@ -42,7 +38,6 @@
       color: red;
       display: none;
     }
-
     .todo-item:hover .delete-btn {
       display: block;
     }
@@ -50,32 +45,26 @@
     /* Additional styles */
     body {
       font-family: Arial, sans-serif;
-      transition: background-color 0.3s ease;
-      /* Add transition for smooth theme change */
+      transition: background-color 0.3s ease; /* Add transition for smooth theme change */
     }
-
     footer {
       text-align: center;
       margin-top: 20px;
     }
-
     /* Dark theme styles */
     body.dark-theme {
       background-color: #1a1a1a;
       color: #fff;
     }
-
     .todo-column.dark-theme {
       background-color: #333;
     }
-
     .todo-item.dark-theme {
       background-color: #333;
       box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
     }
   </style>
 </head>
-
 <body>
   <h1>Todo List</h1>
   <button onclick="toggleTheme()">Toggle Theme</button> <!-- Add a button to toggle the theme -->
@@ -104,10 +93,8 @@
     </div>
   </div>
   <footer>Created by Mazunin Andrey</footer>
-
   <script>
     let isDarkTheme = false;
-
     function toggleTheme() {
       const body = document.querySelector('body');
       const todoColumns = document.querySelectorAll('.todo-column');
@@ -124,24 +111,19 @@
       isDarkTheme = !isDarkTheme;
     }
     let draggedItem = null;
-
     function allowDrop(event) {
       event.preventDefault();
     }
-
     function drag(event) {
       draggedItem = event.target;
     }
-
     function drop(event) {
       event.preventDefault();
       event.target.appendChild(draggedItem);
     }
-
     function deleteTask(event) {
       event.target.parentElement.remove();
     }
-
     function addNewTask(columnId) {
       const newTaskInput = document.getElementById('new-task');
       const columnItems = document.getElementById(columnId);
@@ -154,49 +136,9 @@
       newTask.addEventListener('dragstart', drag);
       saveTaxiData(); // Вызов функции сохранения данных
     }
-         // Функция для сохранения данных в localStorage
-  function saveTaxiData() {
-    const allColumns = document.querySelectorAll('.todo-column');
-    const allTasksData = [];
-    allColumns.forEach(column => {
-      const columnId = column.id;
-      const columnItems = Array.from(column.querySelector('.todo-items').querySelectorAll('li'));
-      const columnData = columnItems.map(item => item.textContent);
-      allTasksData.push({ columnId, columnData });
-    });
-    localStorage.setItem('allTasksData', JSON.stringify(allTasksData));
-  }
 
-  // Функция для восстановления данных из localStorage
-  function restoreTaxiData() {
-    const savedTasksData = localStorage.getItem('allTasksData');
-    if (savedTasksData) {
-      const allTasksData = JSON.parse(savedTasksData);
-      allTasksData.forEach(({ columnId, columnData }) => {
-        const columnItems = document.getElementById(columnId);
-        columnItems.innerHTML = ''; // Очищаем текущие элементы списка
-        columnData.forEach(itemText => {
-          const newTask = document.createElement('li');
-          newTask.className = 'todo-item';
-          newTask.draggable = true;
-          newTask.textContent = itemText;
-          newTask.innerHTML += ' <span class="delete-btn" onclick="deleteTask(event)">❌</span>';
-          columnItems.appendChild(newTask);
-          newTask.addEventListener('dragstart', drag);
-        });
-      });
+    function saveTaxiData() {
+      const taxiItems = Array.from(document.getElementById('column1-items').querySelectorAll('li'));
+      const taxiData = taxiItems.map(item => item.textContent);
+      localStorage.setItem('taxiData', JSON.stringify(taxiData));
     }
-  }
-
-  // Обработчик события для перетаскивания задач
-  function handleDragDrop() {
-    // Добавьте обработчики событий для перетаскивания и сбрасывания задач между столбцами
-    // Обновите данные в localStorage при перемещении задач
-  }
-
-  // Вызываем функцию восстановления данных при загрузке страницы
-  document.addEventListener('DOMContentLoaded', restoreTaxiData);
-  </script>
-</body>
-
-</html>
