@@ -3,7 +3,7 @@
 
 <head>
   <title>Todo List</title>
- <style>
+  <style>
     /* Main styles */
     .todo-list {
       list-style-type: none;
@@ -11,12 +11,14 @@
       display: flex;
       justify-content: space-between;
     }
+
     .todo-column {
       flex: 1;
       background-color: #f2f2f2;
       padding: 10px;
       margin-right: 10px;
     }
+
     .todo-item {
       background-color: #f2f2f2;
       padding: 10px;
@@ -27,9 +29,11 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       transition: background-color 0.3s ease;
     }
+
     .todo-item:hover {
       background-color: #e6e6e6;
     }
+
     .delete-btn {
       position: absolute;
       right: 5px;
@@ -38,6 +42,7 @@
       color: red;
       display: none;
     }
+
     .todo-item:hover .delete-btn {
       display: block;
     }
@@ -45,8 +50,10 @@
     /* Additional styles */
     body {
       font-family: Arial, sans-serif;
-      transition: background-color 0.3s ease; /* Add transition for smooth theme change */
+      transition: background-color 0.3s ease;
+      /* Add transition for smooth theme change */
     }
+
     footer {
       text-align: center;
       margin-top: 20px;
@@ -57,9 +64,11 @@
       background-color: #1a1a1a;
       color: #fff;
     }
+
     .todo-column.dark-theme {
       background-color: #333;
     }
+
     .todo-item.dark-theme {
       background-color: #333;
       box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
@@ -145,12 +154,32 @@
       newTask.addEventListener('dragstart', drag);
       saveTaxiData(); // Вызов функции сохранения данных
     }
-
+    // Функция для сохранения данных в localStorage
     function saveTaxiData() {
       const taxiItems = Array.from(document.getElementById('column1-items').querySelectorAll('li'));
       const taxiData = taxiItems.map(item => item.textContent);
       localStorage.setItem('taxiData', JSON.stringify(taxiData));
     }
+    // Функция для восстановления данных из localStorage
+    function restoreTaxiData() {
+      const savedTaxiData = localStorage.getItem('taxiData');
+      if (savedTaxiData) {
+        const taxiItems = JSON.parse(savedTaxiData);
+        const column1Items = document.getElementById('column1-items');
+        column1Items.innerHTML = ''; // Очищаем текущие элементы списка
+        taxiItems.forEach(itemText => {
+          const newTask = document.createElement('li');
+          newTask.className = 'todo-item';
+          newTask.draggable = true;
+          newTask.textContent = itemText;
+          newTask.innerHTML += ' <span class="delete-btn" onclick="deleteTask(event)">❌</span>';
+          column1Items.appendChild(newTask);
+          newTask.addEventListener('dragstart', drag);
+        });
+      }
+    }
+    // Вызываем функцию восстановления данных при загрузке страницы
+    document.addEventListener('DOMContentLoaded', restoreTaxiData);
   </script>
 </body>
 
